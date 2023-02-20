@@ -10,11 +10,13 @@ export default class PostsRouter {
 
     constructor(private postRepository: PostService, private userRepository: UserService) { 
         this.createPost = this.createPost.bind(this)
+        this.getUserPosts = this.getUserPosts.bind(this)
 
         this.router = express.Router()
         this.router.use(userAuth)
 
         this.router.post('/', this.createPost)
+        this.router.get('/:username', this.getUserPosts)
     }
 
     private async createPost(req: Request, res: Response) {
@@ -32,5 +34,15 @@ export default class PostsRouter {
         const createdPost: Post = await this.postRepository.insertPost(newPost)
 
         res.status(200).json(createdPost)
+    }
+
+    private async getUserPosts(req: Request, res: Response) {
+        const { username } = req.params
+
+        const user: User = await this.userRepository.findUserByUsername(username)
+
+        const posts: Post[] = await this.postRepository.getPostsByUserId(user.id)
+
+        res.status(200).json(posts)
     }
 }
