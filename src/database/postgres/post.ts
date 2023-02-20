@@ -16,5 +16,10 @@ export default class PostRepository implements PostService {
         throw new Error("Method not implemented.")
     }
 
+    async getPostsByUserId(userId: number): Promise<Post[]> {
+        const result = await this.pool.query('SELECT * FROM post WHERE user_id = $1', [userId])    
 
+        const post: Post[] = result.rows
+        return post
+    }
 }
