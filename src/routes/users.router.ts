@@ -59,7 +59,6 @@ export default class UsersRouter {
             return res.status(400).json(validationError.details)
         }
 
-
         let user: User
         try {
             user = await this.database.findUserByUsername(request.username)
@@ -79,4 +78,8 @@ export default class UsersRouter {
 
         res.status(200).json({ access_token: token })
     }
+}
+
+const isError = (toBeDetermined: any | Error): toBeDetermined is Error => {
+    return !!(toBeDetermined as Error)
 }

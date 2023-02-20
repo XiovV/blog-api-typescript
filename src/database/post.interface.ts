@@ -1,5 +1,6 @@
 import { BasePost, Post } from "../models/post";
 
 export default interface PostService {
-    insertPost(post: BasePost): Post
+    insertPost(post: BasePost): Promise<Post>
+    getPostById(postId: number): Post
 }

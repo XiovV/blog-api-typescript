@@ -5,13 +5,14 @@ import UsersRouter from "../routes/users.router";
 export default class Server {
     private express: Express
 
-    constructor(private port: number, private usersRouter: UsersRouter) {
+    constructor(private port: number, private usersRouter: UsersRouter, private postsRouter: PostsRouter) {
         this.express = express()
     }
 
     start(): void {
         this.express.use(express.json())
         this.express.use('/api/v1/users', this.usersRouter.router)
+        this.express.use('/api/v1/posts', this.postsRouter.router)
 
         this.express.listen(this.port, () => console.log(`server listening on port ${this.port}...`))
     }

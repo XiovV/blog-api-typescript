@@ -7,25 +7,27 @@ export default class UserRepository implements UserService {
 
     async insertUser(user: BaseUser): Promise<[number, unknown]> {
         try {
-            const result = await this.pool.query(`INSERT INTO "user" (username, email, password) VALUES ($1, $2, $3) RETURNING id`, [user.username, user.email, user.password])
+            const result = await this.pool.query('INSERT INTO "user" (username, email, password) VALUES ($1, $2, $3) RETURNING id', [user.username, user.email, user.password])
 
             const id = result.rows[0].id
             return [id, null]
         } catch (error) {
-            return [0, null]
+            return [0, error]
         }
     }
 
     async findUserByUsername(username: string): Promise<User> {
-            const result = await this.pool.query(`SELECT * FROM "user" WHERE username = $1`, [username])
+        const result = await this.pool.query('SELECT * FROM "user" WHERE username = $1', [username])
 
-            const user: User = result.rows[0]
+        const user: User = result.rows[0]
+        return user
 
-            if (typeof user === 'undefined') {
-                throw new Error('user could not be found')
-            }
-
-            return user 
     }
 
+    async findUserById(id: number): Promise<User> {
+        const result = await this.pool.query('SELECT * FROM "user" WHERE id = $1', [id])
+
+        const user: User = result.rows[0]
+        return user
+    }
 }
